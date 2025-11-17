@@ -26,24 +26,24 @@ public class DestinationCommand {
     CommandSourceStack source = context.getSource();
     Object executor = source.getExecutor();
 
-    if (!(executor instanceof Player sender)) {
+    if (!(executor instanceof Player player)) {
       source.getSender().sendMessage(PrettyMessage.info(String.format("Only players can invoke /%s", commandName)));
       return -Command.SINGLE_SUCCESS;
     }
 
     if (Strings.isNullOrEmpty(destination)) {
-      String currentDestination = DestinationData.getDestination(sender);
+      String currentDestination = DestinationData.getDestination(player);
       // guard against null
       if (currentDestination == null) {
-        sender.sendMessage(PrettyMessage.error("You don't have a destination set"));
+        player.sendMessage(PrettyMessage.error("You don't have a destination set"));
       } else {
-        sender.sendMessage(PrettyMessage.info(String.format("Your current destination is: %s", currentDestination)));
+        player.sendMessage(PrettyMessage.info(String.format("Your current destination is: %s", currentDestination)));
       }
       return Command.SINGLE_SUCCESS;
     }
 
-    sender.sendMessage(PrettyMessage.info(String.format("Destination set to: %s", destination)));
-    DestinationData.setDestination(sender, destination);
+    player.sendMessage(PrettyMessage.info(String.format("Destination set to: %s", destination)));
+    DestinationData.setDestination(player, destination);
     return Command.SINGLE_SUCCESS;
   }
 }
