@@ -1,6 +1,7 @@
 # RailDest
 
-RailDest is a mod that enhances rail mechanics, allowing for automated routing
+RailDest is a plugin that enhances rail mechanics, allowing for automated
+routing
 across rail lines according to a specified destination. The plugin uses the
 redstone mechanics of a T-junction that follows the southeast rule and interacts
 with detector rails.
