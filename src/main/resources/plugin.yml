@@ -1,0 +1,4 @@
+name: raildest
+version: '1.0-SNAPSHOT'
+main: io.github.acopier.raildest.RailDestPlugin
+api-version: '1.21'
