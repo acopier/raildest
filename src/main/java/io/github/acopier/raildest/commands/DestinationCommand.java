@@ -18,6 +18,7 @@ public class DestinationCommand {
   // /dest [destination]
   public static LiteralArgumentBuilder<CommandSourceStack> createCommand() {
     return Commands.literal(commandName).executes(context -> executeCommand(context, null))
+        .then(Commands.literal("unset").executes(context -> executeCommand(context, "unset")))
         .then(Commands.argument("destination", StringArgumentType.greedyString())
             .executes(context -> executeCommand(context, StringArgumentType.getString(context, "destination"))));
   }
@@ -34,7 +35,7 @@ public class DestinationCommand {
     if (Strings.isNullOrEmpty(destination)) {
       String currentDestination = DestinationData.getDestination(player);
       // guard against null
-      if (currentDestination == null) {
+      if (currentDestination.isEmpty()) {
         player.sendMessage(PrettyMessage.error("You don't have a destination set"));
       } else {
         player.sendMessage(PrettyMessage.info(String.format("Your current destination is: %s", currentDestination)));
@@ -42,8 +43,14 @@ public class DestinationCommand {
       return Command.SINGLE_SUCCESS;
     }
 
-    player.sendMessage(PrettyMessage.info(String.format("Destination set to: %s", destination)));
-    DestinationData.setDestination(player, destination);
+
+    if (destination.equals("unset")) {
+      DestinationData.setDestination(player, null);
+      player.sendMessage(PrettyMessage.info("Destination unset"));
+    } else {
+      DestinationData.setDestination(player, destination);
+      player.sendMessage(PrettyMessage.info(String.format("Destination set to: %s", destination)));
+    }
     return Command.SINGLE_SUCCESS;
   }
 }
