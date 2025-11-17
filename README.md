@@ -1,4 +1,4 @@
-**# RailDest
+# RailDest
 
 RailDest is a mod that enhances rail mechanics, allowing for automated routing
 across rail lines according to a specified destination. The plugin uses the
@@ -28,4 +28,4 @@ not on the signs.
 If the signal needs to be inverted, an invertor could be used as such shown
 below:
 
-![Junction invertor](https://static.wikitide.net/civwikiwiki/thumb/8/81/RailSwitchInvertor.png/800px-RailSwitchInvertor.png)**
+![Junction invertor](https://static.wikitide.net/civwikiwiki/thumb/8/81/RailSwitchInvertor.png/800px-RailSwitchInvertor.png)
