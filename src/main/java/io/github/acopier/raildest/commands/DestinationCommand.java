@@ -5,6 +5,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import io.github.acopier.raildest.RailDestPlugin;
 import io.github.acopier.raildest.utilities.DestinationData;
 import io.github.acopier.raildest.utilities.PrettyMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -13,12 +14,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 public class DestinationCommand {
-  static String commandName = "dest";
+  private static final String commandName = "dest";
+
+  private static final RailDestPlugin plugin = RailDestPlugin.getPlugin();
 
   // /dest [destination]
   public static LiteralArgumentBuilder<CommandSourceStack> createCommand() {
     return Commands.literal(commandName).executes(context -> executeCommand(context, null))
         .then(Commands.literal("unset").executes(context -> executeCommand(context, "unset")))
+        .then(Commands.literal("info").executes(context -> executeCommand(context, "info")))
         .then(Commands.argument("destination", StringArgumentType.greedyString())
             .executes(context -> executeCommand(context, StringArgumentType.getString(context, "destination"))));
   }
@@ -43,13 +47,18 @@ public class DestinationCommand {
       return Command.SINGLE_SUCCESS;
     }
 
-
-    if (destination.equals("unset")) {
-      DestinationData.setDestination(player, null);
-      player.sendMessage(PrettyMessage.info("Destination unset"));
-    } else {
-      DestinationData.setDestination(player, destination);
-      player.sendMessage(PrettyMessage.info(String.format("Destination set to: %s", destination)));
+    switch (destination) {
+      case "unset":
+        DestinationData.setDestination(player, null);
+        player.sendMessage(PrettyMessage.info("Destination unset"));
+        break;
+      case "info":
+        player.sendMessage(PrettyMessage.info(String.format("Version: %s\nTaskScheduler: %s", plugin.PLUGIN_VERSION, plugin.getScheduler().getClass().getName())));
+        break;
+      default:
+        DestinationData.setDestination(player, destination);
+        player.sendMessage(PrettyMessage.info(String.format("Destination set to: %s", destination)));
+        break;
     }
     return Command.SINGLE_SUCCESS;
   }
