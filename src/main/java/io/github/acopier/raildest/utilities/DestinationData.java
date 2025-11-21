@@ -8,7 +8,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class DestinationData {
 
   private static final NamespacedKey KEY =
-      new NamespacedKey(RailDestPlugin.PLUGIN_ID, "destination");
+      new NamespacedKey(RailDestPlugin.getPlugin(), "destination");
 
   public static void setDestination(Player player, String destination) {
     if (destination == null || destination.isEmpty()) {

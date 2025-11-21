@@ -8,7 +8,6 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class RailDestPlugin extends JavaPlugin {
-  public static final String PLUGIN_ID = "raildest";
   private static RailDestPlugin plugin;
   public final String PLUGIN_VERSION = getPluginMeta().getVersion();
 
@@ -27,9 +26,9 @@ public final class RailDestPlugin extends JavaPlugin {
   public void onEnable() {
     // command registration
     this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS,
-        commands -> {
-          commands.registrar().register(DestinationCommand.createCommand().build());
-        });
+        commands ->
+            commands.registrar().register(DestinationCommand.createCommand().build())
+    );
     // event registration
     getServer().getPluginManager().registerEvents(new SwitchListener(), this);
   }
