@@ -99,4 +99,5 @@ hangarPublish {
 
 tasks.named("publishPluginPublicationToHangar") {
   dependsOn(tasks.shadowJar)
+  inputs.file(tasks.shadowJar.map { it.archiveFile })
 }
