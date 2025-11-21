@@ -1,7 +1,11 @@
 The MIT License (MIT)
 =====================
 
-Copyright © `2025` `acopier`
+This project is based on code by:
+
+- Copyright © `2019` `okx-code`
+- Copyright © `2024` `Identity Theft`
+- Copyright © `2025` `acopier`
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

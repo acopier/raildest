@@ -1,6 +1,8 @@
 plugins {
-    id 'java'
-    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("java")
+    id("xyz.jpenilla.run-paper") version("3.0.2")
+    id("com.gradleup.shadow") version("9.2.2")
+    id("de.eldoria.plugin-yml.bukkit") version("0.8.0")
 }
 
 group = 'io.github.acopier'
@@ -16,6 +18,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+    implementation("com.cjcrafter:foliascheduler:0.7.2")
 }
 
 tasks {
@@ -45,11 +48,27 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+bukkit {
+    name = "RailDest"
+    description = "A plugin that allows fully automatic rail junctions."
+    version = "1.0-SNAPSHOT"
+    website = "https://github.com/acopier/raildest"
+    author = "acopier"
+    main = "io.github.acopier.raildest.RailDestPlugin"
+    foliaSupported = true
+    apiVersion = "1.21"
+}
+
+tasks.shadowJar {
+    archiveFileName.set("RailDest-${project.version}.jar")
+    relocate("com.cjcrafter.foliascheduler", "io.github.acopier.raildest.schedulers")
+}
+
 processResources {
     def props = [version: version]
-    inputs.properties props
-    filteringCharset 'UTF-8'
+    inputs.properties(props)
+    filteringCharset = 'UTF-8'
     filesMatching('plugin.yml') {
-        expand props
+        expand(props)
     }
 }

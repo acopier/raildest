@@ -1,8 +1,10 @@
 package io.github.acopier.raildest.switches;
 
+import com.cjcrafter.foliascheduler.ServerImplementation;
+import com.cjcrafter.foliascheduler.TaskImplementation;
+import com.cjcrafter.foliascheduler.util.ServerVersions;
 import com.google.common.base.Strings;
 import io.github.acopier.raildest.RailDestPlugin;
-import io.github.acopier.raildest.schedulers.base.TaskScheduler;
 import io.github.acopier.raildest.utilities.DestinationData;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Location;
@@ -21,56 +23,38 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
- * Switch listener that implements switch functionality and uses the RailDestPlugin TaskScheduler
- * to run region-bound work on the correct thread (Folia / Paper compatibility).
- * <p>
- * This version offloads scheduling to an async task (scheduler.runAsync) but always executes
- * Bukkit/world/entity access on the region thread via scheduler.run(location, ...).
+ * Switch listener that implements switch functionality and uses FoliaScheduler's
+ * ServerImplementation to run region-bound work on the correct thread.
  */
 public class SwitchListener implements Listener {
 
   public static final String WILDCARD = "*";
   private static final RailDestPlugin plugin = RailDestPlugin.getPlugin();
-  private static final TaskScheduler scheduler = plugin.getScheduler();
 
-  /**
-   * Event handler for rail switches. Minimal checks run immediately. If the current thread is not the owning
-   * region thread for the block's location, the heavy logic is dispatched via runAsync which then schedules
-   * the region-thread task to safely run Bukkit API code.
-   *
-   * @param event BlockRedstoneEvent that triggered the check.
-   */
+  private static final ServerImplementation scheduler = plugin.getScheduler();
+
   @EventHandler
   public void onSwitchTrigger(final BlockRedstoneEvent event) {
     final Block block = event.getBlock();
 
-    // Quick immediate checks (must be fast)
     if (block.getType() != Material.DETECTOR_RAIL || event.getNewCurrent() != 15) {
       return;
     }
 
     final Location location = block.getLocation();
 
-    // If we're already running on the region thread owning this location, run directly.
-    if (scheduler.isRegionThread(location)) {
+    // If we're already running on the region thread owning this block, run directly.
+    if (scheduler.isOwnedByCurrentRegion(block)) {
       handleSwitchEvent(event, block);
       return;
     }
 
-    // Offload scheduling decision to an async thread, then schedule region-thread work.
-    // This allows any CPU-heavy, non-Bukkit work to be done in the async section in future.
-    scheduler.runAsync(asyncTask -> {
-      // Always schedule the actual Bukkit/world access on the correct region thread
-      scheduler.run(location, regionTask -> handleSwitchEvent(event, block));
-    });
+    scheduler.region(location).run((Consumer<TaskImplementation<Void>>) regionTask -> handleSwitchEvent(event, block));
   }
 
-  /**
-   * The actual logic of the switch handler (extracted so it can run either immediately or on a region task).
-   * NOTE: This method expects to run on a thread that is allowed to access world/entity APIs for the block's region.
-   */
   private void handleSwitchEvent(final BlockRedstoneEvent event, final Block block) {
     // Check that the block above the rail is a sign
     final Block above = block.getRelative(BlockFace.UP);
@@ -92,8 +76,6 @@ public class SwitchListener implements Listener {
     }
 
     // Check that a player is triggering the switch
-    // NOTE: The event doesn't provide the information and so the next best thing is searching for a
-    //       player who is nearby and riding a minecart.
     Player player = null;
     {
       double searchDistance = Double.MAX_VALUE;
@@ -116,8 +98,6 @@ public class SwitchListener implements Listener {
       return;
     }
 
-    // Determine whether a player has a destination that matches one of the destinations
-    // listed on the switch signs, or match if there's a wildcard.
     boolean matched = false;
     final String setDestination = DestinationData.getDestination(player);
     if (!Strings.isNullOrEmpty(setDestination)) {
@@ -143,8 +123,9 @@ public class SwitchListener implements Listener {
         }
       }
     }
+
     // Folia somehow inverts the junction, so we invert the direction to fix it
-    if (plugin.isFolia()) {
+    if (ServerVersions.isFolia()) {
       matched = !matched;
     }
     switch (type) {

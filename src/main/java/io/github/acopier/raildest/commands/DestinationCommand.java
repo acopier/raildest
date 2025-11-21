@@ -1,5 +1,6 @@
 package io.github.acopier.raildest.commands;
 
+import com.cjcrafter.foliascheduler.util.ServerVersions;
 import com.google.common.base.Strings;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -10,6 +11,8 @@ import io.github.acopier.raildest.utilities.DestinationData;
 import io.github.acopier.raildest.utilities.PrettyMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +56,11 @@ public class DestinationCommand {
         player.sendMessage(PrettyMessage.info("Destination unset"));
         break;
       case "info":
-        player.sendMessage(PrettyMessage.info(String.format("Version: %s\nTaskScheduler: %s", plugin.PLUGIN_VERSION, plugin.getScheduler().getClass().getName())));
+        player.sendMessage(PrettyMessage.info("Information")
+            .appendNewline()
+            .append(Component.text("[-] Version: ", NamedTextColor.GOLD), Component.text(plugin.PLUGIN_VERSION, NamedTextColor.GREEN))
+            .appendNewline()
+            .append(Component.text("[-] Folia: ", NamedTextColor.GOLD), Component.text(ServerVersions.isFolia(), NamedTextColor.GREEN)));
         break;
       default:
         DestinationData.setDestination(player, destination);
