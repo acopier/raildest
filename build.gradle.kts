@@ -71,7 +71,7 @@ tasks.shadowJar {
 }
 
 tasks.processResources {
-  val props = mapOf("version" to project.version.toString())
+  val props = mapOf("version" to version)
   inputs.properties(props)
   filteringCharset = "UTF-8"
   filesMatching("plugin.yml") {
@@ -97,7 +97,6 @@ hangarPublish {
   }
 }
 
-tasks.named("publishPluginPublicationToHangar") {
-  dependsOn(tasks.shadowJar)
-  inputs.file(tasks.shadowJar.map { it.archiveFile })
+tasks.build {
+  dependsOn("shadowJar")
 }
