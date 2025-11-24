@@ -1,7 +1,7 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 
 plugins {
-  id("java")
+  kotlin("jvm") version "2.3.0-RC"
   id("xyz.jpenilla.run-paper") version "3.0.2"
   id("com.gradleup.shadow") version "9.2.2"
   id("de.eldoria.plugin-yml.bukkit") version "0.8.0"
@@ -23,6 +23,7 @@ repositories {
 dependencies {
   compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
   implementation("com.cjcrafter:foliascheduler:0.7.2")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
 
 tasks {
@@ -35,21 +36,8 @@ tasks {
 }
 
 val targetJavaVersion = 21
-java {
-  val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-  sourceCompatibility = javaVersion
-  targetCompatibility = javaVersion
-  if (JavaVersion.current() < javaVersion) {
-    toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-  }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-  options.encoding = "UTF-8"
-
-  if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-    options.release.set(targetJavaVersion)
-  }
+kotlin {
+  jvmToolchain(targetJavaVersion)
 }
 
 bukkit {
@@ -63,7 +51,7 @@ bukkit {
 }
 
 tasks.shadowJar {
-  archiveFileName.set("RailDest-${project.version}.jar")
+  archiveFileName.set("RailDest-${version}.jar")
   relocate(
     "com.cjcrafter.foliascheduler",
     "io.github.acopier.raildest.schedulers"
