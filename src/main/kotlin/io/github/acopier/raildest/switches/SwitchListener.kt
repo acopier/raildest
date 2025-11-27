@@ -68,10 +68,7 @@ class SwitchListener : Listener {
     run {
       var searchDistance = Double.MAX_VALUE
       for (entity in block.world.getNearbyEntities(
-        block.location,
-        3.0,
-        3.0,
-        3.0
+        block.location, 3.0, 3.0, 3.0
       )) {
         if (entity !is Player) {
           continue
