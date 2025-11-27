@@ -9,8 +9,7 @@ import org.bukkit.persistence.PersistentDataType
 object DestinationData {
   private val KEY = RailDestPlugin.plugin?.let {
     NamespacedKey(
-      it,
-      "destination"
+      it, "destination"
     )
   }
 
@@ -20,15 +19,21 @@ object DestinationData {
       return
     }
     KEY?.let {
-      player.persistentDataContainer
-        .set(it, PersistentDataType.STRING, destination)
+      player.persistentDataContainer.set(
+        it,
+        PersistentDataType.STRING,
+        destination
+      )
     }
   }
 
   fun getDestination(player: Player): String? {
     return KEY?.let {
-      player.persistentDataContainer
-        .getOrDefault(it, PersistentDataType.STRING, "")
+      player.persistentDataContainer.getOrDefault(
+        it,
+        PersistentDataType.STRING,
+        ""
+      )
     }
   }
 }

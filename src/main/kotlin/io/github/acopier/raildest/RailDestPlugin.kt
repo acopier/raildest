@@ -24,15 +24,12 @@ class RailDestPlugin : JavaPlugin() {
 
   override fun onEnable() {
     // command registration
-    this.lifecycleManager
-      .registerEventHandler(
-        LifecycleEvents.COMMANDS,
-        LifecycleEventHandler { commands ->
-          commands.registrar().register(
-            createCommand().build()
-          )
-        }
-      )
+    this.lifecycleManager.registerEventHandler(
+      LifecycleEvents.COMMANDS, LifecycleEventHandler { commands ->
+        commands.registrar().register(
+          createCommand().build()
+        )
+      })
     // event registration
     server.pluginManager.registerEvents(SwitchListener(), this)
   }

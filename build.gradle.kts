@@ -87,4 +87,5 @@ hangarPublish {
 
 tasks.build {
   dependsOn("shadowJar")
+  dependsOn("jar")
 }

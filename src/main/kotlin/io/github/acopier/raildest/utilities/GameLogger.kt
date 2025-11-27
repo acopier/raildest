@@ -5,7 +5,7 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
 
 
-object PrettyMessage {
+object GameLogger {
   private val prefix = Component.text("[RailDest] ", NamedTextColor.GOLD)
 
   fun info(text: String): TextComponent {

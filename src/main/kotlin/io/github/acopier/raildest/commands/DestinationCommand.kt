@@ -8,7 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import io.github.acopier.raildest.RailDestPlugin
 import io.github.acopier.raildest.utilities.DestinationData
-import io.github.acopier.raildest.utilities.PrettyMessage
+import io.github.acopier.raildest.utilities.GameLogger
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import net.kyori.adventure.text.Component
@@ -23,59 +23,40 @@ object DestinationCommand {
 
   // /dest [destination]
   fun createCommand(): LiteralArgumentBuilder<CommandSourceStack> {
-    return Commands.literal(COMMAND_NAME)
-      .executes { context ->
+    return Commands.literal(COMMAND_NAME).executes { context ->
+      executeCommand(
+        context, null
+      )
+    }.then(
+      Commands.literal("unset").executes { context ->
         executeCommand(
-          context,
-          null
+          context, "unset"
         )
-      }
-      .then(
-        Commands.literal("unset")
-          .executes { context ->
-            executeCommand(
-              context,
-              "unset"
-            )
-          }
-      )
-      .then(
-        Commands.literal("info")
-          .executes { context ->
-            executeCommand(
-              context,
-              "info"
-            )
-          }
-      )
-      .then(
-        Commands.argument(
-          "destination",
-          StringArgumentType.greedyString()
+      }).then(
+      Commands.literal("info").executes { context ->
+        executeCommand(
+          context, "info"
         )
-          .executes { context ->
-            executeCommand(
-              context,
-              StringArgumentType.getString(context, "destination")
-            )
-          }
-      )
+      }).then(
+      Commands.argument(
+        "destination", StringArgumentType.greedyString()
+      ).executes { context ->
+        executeCommand(
+          context, StringArgumentType.getString(context, "destination")
+        )
+      })
   }
 
   private fun executeCommand(
-    context: CommandContext<CommandSourceStack>,
-    destination: String?
+    context: CommandContext<CommandSourceStack>, destination: String?
   ): Int {
     val source = context.getSource()
     val executor = source.executor
 
     if (executor !is Player) {
       source.sender.sendMessage(
-        PrettyMessage.info(
-          String.format(
-            "Only players can invoke /%s",
-            COMMAND_NAME
-          )
+        GameLogger.info(
+          "Only players can invoke /$COMMAND_NAME"
         )
       )
       return -Command.SINGLE_SUCCESS
@@ -86,14 +67,11 @@ object DestinationCommand {
       // guard against null
       currentDestination?.let {
         if (it.isEmpty()) {
-          executor.sendMessage(PrettyMessage.error("You don't have a destination set"))
+          executor.sendMessage(GameLogger.error("You don't have a destination set"))
         } else {
           executor.sendMessage(
-            PrettyMessage.info(
-              String.format(
-                "Your current destination is: %s",
-                currentDestination
-              )
+            GameLogger.info(
+              "Your current destination is: $currentDestination"
             )
           )
         }
@@ -104,34 +82,26 @@ object DestinationCommand {
     when (destination) {
       "unset" -> {
         DestinationData.setDestination(executor, null)
-        executor.sendMessage(PrettyMessage.info("Destination unset"))
+        executor.sendMessage(GameLogger.info("Destination unset"))
       }
 
       "info" -> executor.sendMessage(
-        PrettyMessage.info("Information")
-          .appendNewline()
-          .append(
-            Component.text("[-] Version: ", NamedTextColor.GOLD),
-            Component.text(
-              plugin?.pluginVersion.toString(),
-              NamedTextColor.GREEN
-            )
+        GameLogger.info("Information").appendNewline().append(
+          Component.text("[-] Version: ", NamedTextColor.GOLD),
+          Component.text(
+            plugin?.pluginVersion.toString(), NamedTextColor.GREEN
           )
-          .appendNewline()
-          .append(
-            Component.text("[-] Folia: ", NamedTextColor.GOLD),
-            Component.text(ServerVersions.isFolia(), NamedTextColor.GREEN)
-          )
+        ).appendNewline().append(
+          Component.text("[-] Folia: ", NamedTextColor.GOLD),
+          Component.text(ServerVersions.isFolia(), NamedTextColor.GREEN)
+        )
       )
 
       else -> {
         DestinationData.setDestination(executor, destination)
         executor.sendMessage(
-          PrettyMessage.info(
-            String.format(
-              "Destination set to: %s",
-              destination
-            )
+          GameLogger.info(
+            "Destination set to: $destination"
           )
         )
       }

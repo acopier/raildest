@@ -42,13 +42,11 @@ class SwitchListener : Listener {
       }
     }
 
-    scheduler?.region(location)
-      ?.run { _ ->
-        handleSwitchEvent(
-          event,
-          block
-        )
-      }
+    scheduler?.region(location)?.run { _ ->
+      handleSwitchEvent(
+        event, block
+      )
+    }
   }
 
   private fun handleSwitchEvent(event: BlockRedstoneEvent, block: Block) {
@@ -59,11 +57,8 @@ class SwitchListener : Listener {
     }
 
     val serializer = PlainTextComponentSerializer.plainText()
-    val lines = (above.state as Sign).getSide(Side.FRONT)
-      .lines()
-      .stream()
-      .map<String> { component -> serializer.serialize(component) }
-      .toArray()
+    val lines = (above.state as Sign).getSide(Side.FRONT).lines().stream()
+      .map<String> { component -> serializer.serialize(component) }.toArray()
 
     // Check that the sign has a valid switch type
     val type = SwitchType.find(lines[0] as String?) ?: return
@@ -72,8 +67,12 @@ class SwitchListener : Listener {
     var player: Player? = null
     run {
       var searchDistance = Double.MAX_VALUE
-      for (entity in block.world
-        .getNearbyEntities(block.location, 3.0, 3.0, 3.0)) {
+      for (entity in block.world.getNearbyEntities(
+        block.location,
+        3.0,
+        3.0,
+        3.0
+      )) {
         if (entity !is Player) {
           continue
         }
@@ -112,8 +111,7 @@ class SwitchListener : Listener {
             continue
           }
           if (switchDestination == WILDCARD || playerDestination.equals(
-              switchDestination,
-              ignoreCase = true
+              switchDestination, ignoreCase = true
             )
           ) {
             matched = true

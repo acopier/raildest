@@ -7,8 +7,7 @@ import org.apache.commons.lang3.StringUtils
  * Switch type matcher, will match a type to a tag.
  */
 enum class SwitchType(private val tag: String) {
-  NORMAL("[destination]"),
-  INVERTED("[!destination]");
+  NORMAL("[destination]"), INVERTED("[!destination]");
 
   companion object {
     /**
