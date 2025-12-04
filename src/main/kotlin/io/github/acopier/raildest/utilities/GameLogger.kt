@@ -6,13 +6,13 @@ import net.kyori.adventure.text.format.NamedTextColor
 
 
 object GameLogger {
-  private val prefix = Component.text("[RailDest] ", NamedTextColor.GOLD)
+    private val prefix = Component.text("[RailDest] ", NamedTextColor.GOLD)
 
-  fun info(text: String): TextComponent {
-    return prefix.append(Component.text(text, NamedTextColor.GREEN))
-  }
+    fun info(text: String): TextComponent {
+        return prefix.append(Component.text(text, NamedTextColor.GREEN))
+    }
 
-  fun error(text: String): TextComponent {
-    return prefix.append(Component.text(text, NamedTextColor.RED))
-  }
+    fun error(text: String): TextComponent {
+        return prefix.append(Component.text(text, NamedTextColor.RED))
+    }
 }
