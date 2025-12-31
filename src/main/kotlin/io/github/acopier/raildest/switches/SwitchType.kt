@@ -17,7 +17,7 @@ enum class SwitchType(private val tag: String) {
          * @return Returns a match switch type, or null if none are found.
          */
         fun find(tag: String?): SwitchType? {
-            if (tag == null || tag.isEmpty()) {
+            if (tag.isNullOrEmpty()) {
                 return null
             }
             for (type in entries) {

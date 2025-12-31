@@ -1,4 +1,6 @@
 import io.papermc.hangarpublishplugin.model.Platforms
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("jvm") version "2.3.0-RC"
@@ -30,14 +32,16 @@ tasks {
     runServer {
         // Configure the Minecraft version for our task.
         // This is the only required configuration besides applying the plugin.
-        // Your plugin"s jar (or shadowJar if present) will be used automatically.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
         minecraftVersion("1.21.8")
     }
 }
 
 val targetJavaVersion = 21
 kotlin {
-    jvmToolchain(targetJavaVersion)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+    }
 }
 
 bukkit {
@@ -88,4 +92,12 @@ hangarPublish {
 tasks.build {
     dependsOn("shadowJar")
     dependsOn("jar")
+}
+
+tasks.compileJava {
+    sourceCompatibility = "${JavaVersion.VERSION_21}"
+}
+
+tasks.compileTestJava {
+    sourceCompatibility = "${JavaVersion.VERSION_21}"
 }
