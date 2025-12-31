@@ -3,11 +3,11 @@ import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version "2.3.0-RC"
+    kotlin("jvm") version "2.3.0"
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("com.gradleup.shadow") version "9.2.2"
+    id("com.gradleup.shadow") version "9.3.0"
     id("de.eldoria.plugin-yml.bukkit") version "0.8.0"
-    id("io.papermc.hangar-publish-plugin") version "0.1.3"
+    id("io.papermc.hangar-publish-plugin") version "0.1.4"
 }
 
 group = "io.github.acopier"
@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     implementation("com.cjcrafter:foliascheduler:0.7.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
@@ -92,12 +92,4 @@ hangarPublish {
 tasks.build {
     dependsOn("shadowJar")
     dependsOn("jar")
-}
-
-tasks.compileJava {
-    sourceCompatibility = "${JavaVersion.VERSION_21}"
-}
-
-tasks.compileTestJava {
-    sourceCompatibility = "${JavaVersion.VERSION_21}"
 }
