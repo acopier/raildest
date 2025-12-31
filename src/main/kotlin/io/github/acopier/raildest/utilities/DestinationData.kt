@@ -14,7 +14,7 @@ object DestinationData {
     }
 
     fun setDestination(player: Player, destination: String?) {
-        if (destination == null || destination.isEmpty()) {
+        if (destination.isNullOrEmpty()) {
             KEY?.let { player.persistentDataContainer.remove(it) }
             return
         }

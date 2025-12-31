@@ -6,6 +6,7 @@ import io.github.acopier.raildest.commands.DestinationCommand.createCommand
 import io.github.acopier.raildest.switches.SwitchListener
 import io.papermc.paper.plugin.lifecycle.event.handler.LifecycleEventHandler
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.plugin.java.JavaPlugin
 
 class RailDest : JavaPlugin() {
@@ -40,5 +41,6 @@ class RailDest : JavaPlugin() {
 
     companion object {
         var plugin: RailDest? = null
+        val miniMessage = MiniMessage.builder().strict(true).build()
     }
 }

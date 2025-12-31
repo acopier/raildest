@@ -37,7 +37,6 @@ tasks {
     }
 }
 
-val targetJavaVersion = 21
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
@@ -92,4 +91,14 @@ hangarPublish {
 tasks.build {
     dependsOn("shadowJar")
     dependsOn("jar")
+}
+
+tasks.compileJava {
+    sourceCompatibility = "${JavaVersion.VERSION_25}"
+    targetCompatibility = "${JavaVersion.VERSION_21}"
+}
+
+tasks.compileTestJava {
+    sourceCompatibility = "${JavaVersion.VERSION_21}"
+    targetCompatibility = "${JavaVersion.VERSION_21}"
 }

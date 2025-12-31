@@ -14,6 +14,7 @@ import io.papermc.paper.command.brigadier.Commands
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.entity.Player
+import java.util.Optional
 
 
 object DestinationCommand {
@@ -25,30 +26,30 @@ object DestinationCommand {
     fun createCommand(): LiteralArgumentBuilder<CommandSourceStack> {
         return Commands.literal(COMMAND_NAME).executes { context ->
             executeCommand(
-                context, null
+                context, Optional.empty()
             )
         }.then(
             Commands.literal("unset").executes { context ->
                 executeCommand(
-                    context, "unset"
+                    context, Optional.of("unset")
                 )
             }).then(
             Commands.literal("info").executes { context ->
                 executeCommand(
-                    context, "info"
+                    context, Optional.of("info")
                 )
             }).then(
             Commands.argument(
                 "destination", StringArgumentType.greedyString()
             ).executes { context ->
                 executeCommand(
-                    context, StringArgumentType.getString(context, "destination")
+                    context, Optional.of(StringArgumentType.getString(context, "destination"))
                 )
             })
     }
 
     private fun executeCommand(
-        context: CommandContext<CommandSourceStack>, destination: String?
+        context: CommandContext<CommandSourceStack>, destination: Optional<String>
     ): Int {
         val source = context.getSource()
         val executor = source.executor
@@ -62,7 +63,7 @@ object DestinationCommand {
             return -Command.SINGLE_SUCCESS
         }
 
-        if (Strings.isNullOrEmpty(destination)) {
+        if (destination.isEmpty) {
             val currentDestination = DestinationData.getDestination(executor)
             // guard against null
             currentDestination?.let {
@@ -79,26 +80,24 @@ object DestinationCommand {
             return Command.SINGLE_SUCCESS
         }
 
-        when (destination) {
-            "unset" -> {
+        when ((destination)) {
+            Optional.of("unset") -> {
                 DestinationData.setDestination(executor, null)
                 executor.sendMessage(GameLogger.info("Destination unset"))
             }
 
-            "info" -> executor.sendMessage(
-                GameLogger.info("Information").appendNewline().append(
-                    Component.text("[-] Version: ", NamedTextColor.GOLD),
-                    Component.text(
-                        plugin?.pluginVersion.toString(), NamedTextColor.GREEN
+            Optional.of("info") -> executor.sendMessage(
+                GameLogger.info("Information").append(
+                    RailDest.miniMessage.deserialize(
+                        """
+<gold>[-] Version: </gold><green>${plugin?.pluginVersion}</green>
+<gold>[-] Folia: </gold><green>${ServerVersions.isFolia()}</green>"""
                     )
-                ).appendNewline().append(
-                    Component.text("[-] Folia: ", NamedTextColor.GOLD),
-                    Component.text(ServerVersions.isFolia(), NamedTextColor.GREEN)
                 )
             )
 
             else -> {
-                DestinationData.setDestination(executor, destination)
+                DestinationData.setDestination(executor, destination.get())
                 executor.sendMessage(
                     GameLogger.info(
                         "Destination set to: $destination"
