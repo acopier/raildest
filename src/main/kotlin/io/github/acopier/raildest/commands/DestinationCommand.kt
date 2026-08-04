@@ -51,7 +51,7 @@ object DestinationCommand {
     private fun executeCommand(
         context: CommandContext<CommandSourceStack>, destination: Optional<String>
     ): Int {
-        val source = context.getSource()
+        val source = context.source
         val executor = source.executor
 
         if (executor !is Player) {

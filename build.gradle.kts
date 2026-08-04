@@ -3,29 +3,33 @@ import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    kotlin("jvm") version "2.3.0"
+    kotlin("jvm") version "2.4.10"
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("com.gradleup.shadow") version "9.3.0"
-    id("de.eldoria.plugin-yml.bukkit") version "0.8.0"
+    id("com.gradleup.shadow") version "9.6.1"
+    id("de.eldoria.plugin-yml.bukkit") version "0.9.0"
     id("io.papermc.hangar-publish-plugin") version "0.1.4"
 }
 
 group = "io.github.acopier"
-version = "3.0"
-val mcVersion = "1.21"
+version = "4.0"
+val mcVersion = "26.2"
 
 repositories {
     mavenCentral()
     maven {
-        name = "papermc-repo"
+        name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
-    implementation("com.cjcrafter:foliascheduler:0.7.2")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
+    implementation("com.cjcrafter:foliascheduler:0.8.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+}
+
+java {
+  toolchain.languageVersion.set(JavaLanguageVersion.of(25))
 }
 
 tasks {
@@ -39,7 +43,7 @@ tasks {
 
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_21
+        jvmTarget = JvmTarget.JVM_25
     }
 }
 
@@ -95,10 +99,10 @@ tasks.build {
 
 tasks.compileJava {
     sourceCompatibility = "${JavaVersion.VERSION_25}"
-    targetCompatibility = "${JavaVersion.VERSION_21}"
+    targetCompatibility = "${JavaVersion.VERSION_25}"
 }
 
 tasks.compileTestJava {
-    sourceCompatibility = "${JavaVersion.VERSION_21}"
-    targetCompatibility = "${JavaVersion.VERSION_21}"
+    sourceCompatibility = "${JavaVersion.VERSION_25}"
+    targetCompatibility = "${JavaVersion.VERSION_25}"
 }
