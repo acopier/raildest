@@ -3,10 +3,12 @@ package io.github.acopier.raildest
 import com.cjcrafter.foliascheduler.FoliaCompatibility
 import com.cjcrafter.foliascheduler.ServerImplementation
 import io.github.acopier.raildest.commands.DestinationCommand.createCommand
+import io.github.acopier.raildest.localization.ProjectMiniMessageTranslator
 import io.github.acopier.raildest.switches.SwitchListener
 import io.papermc.paper.plugin.lifecycle.event.handler.LifecycleEventHandler
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.translation.GlobalTranslator
 import org.bukkit.plugin.java.JavaPlugin
 
 class RailDest : JavaPlugin() {
@@ -24,6 +26,7 @@ class RailDest : JavaPlugin() {
         FoliaCompatibility(this).serverImplementation
 
     override fun onEnable() {
+        GlobalTranslator.translator().addSource(ProjectMiniMessageTranslator(miniMessage))
         // command registration
         this.lifecycleManager.registerEventHandler(
             LifecycleEvents.COMMANDS, LifecycleEventHandler { commands ->

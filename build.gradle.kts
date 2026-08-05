@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.github.acopier"
-version = "4.0"
+version = "4.1"
 val mcVersion = "26.2"
 
 repositories {

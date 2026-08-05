@@ -13,6 +13,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import java.util.Optional
 
@@ -57,7 +58,8 @@ object DestinationCommand {
         if (executor !is Player) {
             source.sender.sendMessage(
                 GameLogger.info(
-                    "Only players can invoke /$COMMAND_NAME"
+                    "<lang:only-players-can-invoke/> <command/>",
+                    Placeholder.unparsed("command", "/$COMMAND_NAME")
                 )
             )
             return -Command.SINGLE_SUCCESS
@@ -68,11 +70,12 @@ object DestinationCommand {
             // guard against null
             currentDestination?.let {
                 if (it.isEmpty()) {
-                    executor.sendMessage(GameLogger.error("You don't have a destination set"))
+                    executor.sendMessage(GameLogger.error("<lang:no-destination-set/>"))
                 } else {
                     executor.sendMessage(
                         GameLogger.info(
-                            "Your current destination is: $currentDestination"
+                            "<lang:current-destination/> <current_destination/>",
+                            Placeholder.unparsed("current_destination", currentDestination)
                         )
                     )
                 }
@@ -80,18 +83,19 @@ object DestinationCommand {
             return Command.SINGLE_SUCCESS
         }
 
-        when ((destination)) {
+        when (destination) {
             Optional.of("unset") -> {
+
                 DestinationData.setDestination(executor, null)
-                executor.sendMessage(GameLogger.info("Destination unset"))
+                executor.sendMessage(GameLogger.info("<lang:destination-unset/>"))
             }
 
             Optional.of("info") -> executor.sendMessage(
-                GameLogger.info("Information").append(
+                GameLogger.info("<lang:information/>").append(
                     RailDest.miniMessage.deserialize(
                         """
-<gold>[-] Version: </gold><green>${plugin?.pluginVersion}</green>
-<gold>[-] Folia: </gold><green>${ServerVersions.isFolia()}</green>"""
+                <gold>[-] <lang:version/>: </gold><green>${plugin?.pluginVersion}</green>
+                <gold>[-] Folia: </gold><green>${ServerVersions.isFolia()}</green>"""
                     )
                 )
             )
@@ -100,7 +104,7 @@ object DestinationCommand {
                 DestinationData.setDestination(executor, destination.get())
                 executor.sendMessage(
                     GameLogger.info(
-                        "Destination set to: $destination"
+                        "<lang:destination-set/> <destination/>", Placeholder.unparsed("destination", destination.get())
                     )
                 )
             }
